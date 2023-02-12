@@ -59,7 +59,7 @@ func v3() {
 			"filepath": c.Param("filepath"),
 		})
 	})
-	r.Post("/a/:lang/c", func(c *gee.Context) {
+	r.Get("/a/:lang/c", func(c *gee.Context) {
 		c.JSON(http.StatusOK, gee.H{
 			"lang": c.Param("lang"),
 		})
