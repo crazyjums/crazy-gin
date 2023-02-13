@@ -8,10 +8,10 @@ import (
 
 func v2() {
 	r := gee.New()
-	r.Get("/", func(c *gee.Context) {
+	r.GET("/", func(c *gee.Context) {
 		c.HTML(http.StatusOK, "<b>Hello crazyGin</b>")
 	})
-	r.Post("/getUser", func(c *gee.Context) {
+	r.POST("/getUser", func(c *gee.Context) {
 		c.JSON(http.StatusOK, gee.H{
 			"name": "jums",
 			"uid":  6666,
@@ -43,23 +43,23 @@ func test() {
 
 func v3() {
 	r := gee.New()
-	r.Get("/user/me", func(c *gee.Context) {
+	r.GET("/user/me", func(c *gee.Context) {
 		c.JSON(http.StatusOK, gee.H{
 			"name": "me",
 			"uid":  123456,
 		})
 	})
-	r.Get("/hello/:id", func(c *gee.Context) {
+	r.GET("/hello/:id", func(c *gee.Context) {
 		c.JSON(http.StatusOK, gee.H{
 			"id": c.Param("id"),
 		})
 	})
-	r.Get("/assert/*filepath", func(c *gee.Context) {
+	r.GET("/assert/*filepath", func(c *gee.Context) {
 		c.JSON(http.StatusOK, gee.H{
 			"filepath": c.Param("filepath"),
 		})
 	})
-	r.Get("/a/:lang/c", func(c *gee.Context) {
+	r.GET("/a/:lang/c", func(c *gee.Context) {
 		c.JSON(http.StatusOK, gee.H{
 			"lang": c.Param("lang"),
 		})
@@ -70,8 +70,21 @@ func v3() {
 	}
 }
 
+func v4() {
+	r := gee.New()
+	v1 := r.Group("/v1")
+	v1.GET("/get", func(c *gee.Context) {
+		c.JSON(http.StatusOK, gee.H{
+			"version": "v1",
+			"get":     "get",
+		})
+	})
+	_ = r.Run(":9001")
+}
+
 func main() {
 	//v2()
-	v3()
+	//v3()
 	//test()
+	v4()
 }

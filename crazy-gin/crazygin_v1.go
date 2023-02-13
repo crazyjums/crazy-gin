@@ -30,11 +30,11 @@ package crazy_gin
 //	return engine
 //}
 //
-//func (engine *Engine) Get(path string, handlerFunc HandlerFunc) {
+//func (engine *Engine) GET(path string, handlerFunc HandlerFunc) {
 //	engine.AddRoute(http.MethodGet, path, handlerFunc)
 //}
 //
-//func (engine *Engine) Post(path string, handlerFunc HandlerFunc) {
+//func (engine *Engine) POST(path string, handlerFunc HandlerFunc) {
 //	engine.AddRoute(http.MethodPost, path, handlerFunc)
 //}
 //

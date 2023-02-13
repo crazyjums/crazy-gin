@@ -9,6 +9,8 @@ type HandlerFunc func(c *Context)
 
 type Engine struct {
 	router *router
+	*RouterGroup
+	groups []*RouterGroup // share all groups
 }
 
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -26,18 +28,21 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func New() *Engine {
-	return &Engine{router: NewRouter()}
+	engine := &Engine{router: NewRouter()}
+	engine.RouterGroup = &RouterGroup{engine: engine}
+	engine.groups = []*RouterGroup{engine.RouterGroup}
+	return engine
 }
 
 func (engine *Engine) AddRoute(method, path string, handlerFunc HandlerFunc) {
 	engine.router.AddRoute(method, path, handlerFunc)
 }
 
-func (engine *Engine) Get(path string, handlerFunc HandlerFunc) {
+func (engine *Engine) GET(path string, handlerFunc HandlerFunc) {
 	engine.router.AddRoute(http.MethodGet, path, handlerFunc)
 }
 
-func (engine *Engine) Post(path string, handlerFunc HandlerFunc) {
+func (engine *Engine) POST(path string, handlerFunc HandlerFunc) {
 	engine.router.AddRoute(http.MethodPost, path, handlerFunc)
 }
 
