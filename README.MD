@@ -28,7 +28,7 @@ func main() {
 			"id": c.Param("id"),
 		})
 	})
-	r.Get("/assert/*filepath", func(c *gee.Context) {
+	r.Get("/static/*filepath", func(c *gee.Context) {
 		c.JSON(http.StatusOK, gee.H{
 			"filepath": c.Param("filepath"),
 		})
