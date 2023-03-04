@@ -30,9 +30,9 @@ func (r *router) AddRoute(method, pattern string, handlerFunc HandlerFunc) {
 	r.handlers[key] = handlerFunc
 }
 
-func (r *router) GetRoute(method, pattern string) (*node, map[string]string) {
+func (r *router) getRoute(method, pattern string) (*node, map[string]string) {
 	searchParts := parsePattern(pattern)
-	fmt.Println("GetRoute, searchParts = ", searchParts)
+	fmt.Println("getRoute, searchParts = ", searchParts)
 	params := make(map[string]string)
 	root, ok := r.roots[method]
 	if !ok {
@@ -40,7 +40,7 @@ func (r *router) GetRoute(method, pattern string) (*node, map[string]string) {
 	}
 
 	n := root.search(searchParts, 0)
-	fmt.Println("GetRoute, n = ", n)
+	fmt.Println("getRoute, n = ", n)
 
 	if n != nil {
 		parts := parsePattern(n.pattern)
@@ -61,22 +61,18 @@ func (r *router) GetRoute(method, pattern string) (*node, map[string]string) {
 }
 
 func (r *router) handle(c *Context) {
-	//key := c.Method + "-" + c.Path
-	//if handler, ok := r.handlers[key]; ok {
-	//	handler(c)
-	//} else {
-	//	fmt.Println("404 NOT FOUND... path = ", key)
-	//}
-
-	n, params := r.GetRoute(c.Method, c.Path)
+	n, params := r.getRoute(c.Method, c.Path)
 	if n != nil {
 		c.Params = params
 		key := c.Method + "-" + n.pattern
 		fmt.Println("handle, ", r.handlers)
-		r.handlers[key](c)
+		c.handlers = append(c.handlers, r.handlers[key])
 	} else {
-		c.String(http.StatusNotFound, "404 NOT FOUND... path = %s\n", c.Path)
+		c.handlers = append(c.handlers, func(c *Context) {
+			c.String(http.StatusNotFound, "404 NOT FOUND... path = %s\n", c.Path)
+		})
 	}
+	c.Next()
 }
 
 func parsePattern(pattern string) []string {

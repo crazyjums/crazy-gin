@@ -17,6 +17,8 @@ type Context struct {
 	Method     string
 	Path       string
 	Params     map[string]string
+	handlers   []HandlerFunc
+	index      int
 }
 
 func newContext(w http.ResponseWriter, r *http.Request) *Context {
@@ -25,12 +27,21 @@ func newContext(w http.ResponseWriter, r *http.Request) *Context {
 		Resp:   r,
 		Method: r.Method,
 		Path:   r.URL.Path,
+		index:  -1,
 	}
 }
 
 func (c *Context) Param(key string) string {
 	v, _ := c.Params[key]
 	return v
+}
+
+func (c *Context) Next() {
+	c.index++
+	s := len(c.handlers)
+	for ; c.index < s; c.index++ {
+		c.handlers[c.index](c)
+	}
 }
 
 func (c *Context) PostForm(key string) string {
