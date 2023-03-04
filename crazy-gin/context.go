@@ -88,3 +88,10 @@ func (c *Context) JSON(code int, obj interface{}) {
 		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
 	}
 }
+
+func (c *Context) Fail(code int, msg string) {
+	c.JSON(code, H{
+		"code": code,
+		"msg":  msg,
+	})
+}

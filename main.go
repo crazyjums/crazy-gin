@@ -17,7 +17,7 @@ func formatAdData(t time.Time) string {
 
 func main() {
 	r := gee.New()
-	r.Use(middleware.Logger4All())
+	r.Use(middleware.Logger4All(), gee.Recovery())
 	r.SetFuncMap(template.FuncMap{
 		"formatAsData": formatAdData,
 	})
@@ -26,6 +26,13 @@ func main() {
 
 	r.GET("/", func(c *gee.Context) {
 		c.HTML(http.StatusOK, "css.tmpl", nil)
+	})
+
+	r.GET("panic", func(c *gee.Context) {
+		n := []int{1, 2, 3}
+		c.JSON(http.StatusOK, gee.H{
+			"n": n[4],
+		})
 	})
 
 	v1 := r.Group("/v1")
